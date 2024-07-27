@@ -1,0 +1,36 @@
+# spring.application.name=gatewayapi
+server:
+    address:  192.168.1.2
+    port: 9094
+
+spring:
+    application:
+        name: gatewayapi
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: false
+                    lowerCaseServiceId: true
+eureka:
+    instance:
+        preferIpAddress: true
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: "http://localhost:9080/eureka/"
+
+
+
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+            cors:
+                allowed-origins: " http://122.169.207.194:9093"
+                allowed-methods: "GET,POST,PUT,DELETE"
+
+        

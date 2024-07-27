@@ -1,0 +1,27 @@
+# spring.application.name=servicediscovery
+
+server:
+    port: 9080
+spring:
+    application:
+        name: servicedisovery
+eureka: 
+    instance:
+        hostname: localhost
+    client:
+        fetchRegistry: false
+        registerWithEureka: false
+        serviceUrl:
+            defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+            cors:
+                allowed-origins: " http://122.169.207.194:9093"
+                allowed-methods: "GET,POST,PUT,DELETE"
+
+        
