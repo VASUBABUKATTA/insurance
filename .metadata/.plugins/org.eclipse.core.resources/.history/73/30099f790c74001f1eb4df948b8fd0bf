@@ -1,0 +1,72 @@
+package com.ramanasoft.www.service;
+
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.ramanasoft.www.mode.Customer;
+import com.ramanasoft.www.mode.Payment;
+import com.ramanasoft.www.repository.CustomerRepository;
+import com.ramanasoft.www.repository.PaymentRepository;
+
+
+
+@Service
+public class PaymentService 
+{
+	
+	@Autowired
+	PaymentRepository paymentRepository;
+	
+	@Autowired
+	CustomerRepository customerRepository;
+	
+	public ResponseEntity<String> addData(Payment profile)
+	{
+		profile.setStartdate(LocalDate.now());
+		profile.setEnddate(profile.getStartdate().plusYears(1).minusDays(1));
+		
+		Payment data = paymentRepository.findByPaymentid(profile.getPaymentid());
+		
+		paymentRepository.save(profile);
+		
+		return ResponseEntity.status(HttpStatus.OK).body("successfully done");
+	}
+	
+	public List<Payment> fetchAll()
+	{
+		return paymentRepository.findAll();
+	}
+	
+	public List<Payment> fetch(String nmbr)
+	{
+		return paymentRepository.findByCustomerid(nmbr);
+	}
+
+	public List<Payment> fetchPolocy(String vnumber) {
+		
+		return paymentRepository.findByVnumber(vnumber);
+	}
+
+	public List<Payment> fetchPolocyByNumber(String number) {
+		// TODO Auto-generated method stub
+		Customer cust = customerRepository.findByMobile(number);
+		
+		return paymentRepository.findByCustomerid(cust.getCustomerid());
+	}
+	
+//	public List<Payment> renwal(String vnumber) {
+//		
+//		List<Payment> polocyDetails = paymentRepository.findByVnumber(vnumber);
+//		
+//		return polocyDetails;
+//	}
+
+	
+}
+

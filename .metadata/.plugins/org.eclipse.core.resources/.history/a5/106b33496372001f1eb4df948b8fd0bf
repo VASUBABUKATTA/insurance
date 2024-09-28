@@ -1,0 +1,5 @@
+package com.ramanasoft.www.exception;
+
+public class GlobalException {
+
+}

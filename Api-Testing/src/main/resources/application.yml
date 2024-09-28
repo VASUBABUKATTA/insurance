@@ -1,0 +1,24 @@
+server:
+  port: 9095
+  # address:  192.168.1.3
+  
+spring:
+  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/Api-Testing-vehicleInsurance?createDatabaseIfNotExist=true
+    username: root
+    password: 
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    show-sql: true
+    
+  application:
+    name: API-TESTING
+          
+
