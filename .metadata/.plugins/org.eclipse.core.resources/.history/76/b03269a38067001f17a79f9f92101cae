@@ -1,0 +1,47 @@
+package com.insurance.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.insurance.model.CustomerPaymentDetails;
+import com.insurance.repository.CustomerPaymentDetailsRepository;
+
+@Service
+public class CustomerPaymentDetailsService 
+{
+	
+	@Autowired
+	CustomerPaymentDetailsRepository customerPaymentDetailsRepository;
+	
+	public List<CustomerPaymentDetails> getPaymentData()
+	{
+		return customerPaymentDetailsRepository.findAll();
+	}
+	
+
+	
+	public List<CustomerPaymentDetails> getPaymentDetailsByCustomerId(@PathVariable String customerId)
+	{
+		return customerPaymentDetailsRepository.findByCustomerId(customerId);
+	}
+	
+	public CustomerPaymentDetails createPaymentData(CustomerPaymentDetails data )
+	{
+        data.setStartingDate(LocalDate.now());
+        data.setExpiryDate(data.getStartingDate().minusDays((1)).plusYears(data.getYear()));
+		return customerPaymentDetailsRepository.save(data);
+    }
+	
+	public String deletePaymentDetailsById(long id) {
+        if (customerPaymentDetailsRepository.existsById(id)) {
+            customerPaymentDetailsRepository.deleteById(id);
+            return "Deleted";
+        } else {
+            return "Not Found";
+        }
+    }
+}

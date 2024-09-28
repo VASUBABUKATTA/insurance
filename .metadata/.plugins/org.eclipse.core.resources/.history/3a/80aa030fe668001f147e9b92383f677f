@@ -1,0 +1,92 @@
+package com.insurance.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.insurance.Exception.ResourceNotFoundException;
+import com.insurance.model.StructureAndDetails;
+import com.insurance.repository.StructureDetailsRepository;
+
+@Service
+public class StructureAndDetailsService 
+{
+	
+	@Autowired
+	StructureDetailsRepository propertyInsuranceRepository;
+	
+	public ResponseEntity<List<StructureAndDetails>> getAllDetails()
+	{
+		List<StructureAndDetails> data = propertyInsuranceRepository.findAll();
+		
+		if(data.isEmpty())
+		{
+			throw new ResourceNotFoundException("Data was not Found");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(data);
+	}
+	public Optional<List<StructureAndDetails>> getStructureDetailsByCustomerId(String customerId) {
+        Optional<List<StructureAndDetails>> structuresOptional = propertyInsuranceRepository.findByCustomerId(customerId);
+
+	    if (structuresOptional.isPresent() && structuresOptional.get().isEmpty()) {
+	         throw new ResourceNotFoundException("Customer Id Not Found");
+			// Optional<ArrayList<String>> structuredetailsOptinalData =  new Optional<ArrayList<String>>();
+			// return structuredetailsOptinalData.add("CustomerId was Not Found");
+			
+			// // return "Customr Id was Not Found";
+	    }
+
+	    return structuresOptional;
+    }
+	
+	public StructureAndDetails createDetails( StructureAndDetails details )
+	{
+		return propertyInsuranceRepository.save(details);
+	}	
+	
+	public Optional<StructureAndDetails> getStructureDetailsById(long id) {
+		Optional<StructureAndDetails> structireTableDetails = propertyInsuranceRepository.findById(id);
+		if (structireTableDetails.isEmpty()) {
+			   throw new ResourceNotFoundException("Id Was Not Found");
+		   }
+	   return structireTableDetails;
+    }
+	
+	
+	 public String deleteStructureDetailsById(long id) {
+		Optional<StructureAndDetails> existingDetailsOptional = propertyInsuranceRepository.findById(id);
+		if (existingDetailsOptional.isPresent()) {
+			propertyInsuranceRepository.deleteById(id);
+			return "Structure details deleted successfully";
+		} else {
+			throw new ResourceNotFoundException("Id Was Not Found");
+		}
+	    }
+	 
+	 public String updateStructureDetailsById(long id, StructureAndDetails details) {
+	        Optional<StructureAndDetails> existingDetailsOptional = propertyInsuranceRepository.findById(id);
+	        if (existingDetailsOptional.isPresent()) {
+	            StructureAndDetails existingDetails = existingDetailsOptional.get();
+	           
+	            existingDetails.setMarketValue(details.getMarketValue());
+	            existingDetails.setSquareFeet(details.getSquareFeet());
+	            existingDetails.setPincode(details.getPincode());
+	            existingDetails.setBuildingAge(details.getBuildingAge());
+	            existingDetails.setSecurity(details.getSecurity());
+	            existingDetails.setEffected(details.getEffected());
+	            existingDetails.setPerson(details.getPerson());
+	            
+	           propertyInsuranceRepository.save(existingDetails);
+	           return "Updated SuccessFully";
+	        } else {
+	            return "Id was notFound";
+	        }
+	    }
+
+
+}

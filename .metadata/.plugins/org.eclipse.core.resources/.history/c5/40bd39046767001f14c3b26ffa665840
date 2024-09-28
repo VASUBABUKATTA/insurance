@@ -1,0 +1,15 @@
+package com.insurance.model;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table
+@Schema(
+	name=" customer signUp",
+	description = " Schema to hold customer Payment Information"
+)
+public class CustomerPaymentDetails {
+
+}

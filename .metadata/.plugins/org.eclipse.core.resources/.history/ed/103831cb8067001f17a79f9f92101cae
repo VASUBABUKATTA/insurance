@@ -1,0 +1,75 @@
+package com.insurance.service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.insurance.model.CustomerSignupDetails;
+import com.insurance.repository.CustomerSignupDetailsRepository;
+
+@Service
+public class CustomerSignupService 
+{
+	
+	@Autowired
+	CustomerSignupDetailsRepository customerSignupRepository;
+	
+	public List<CustomerSignupDetails> getAllCustomers()
+	{
+		return customerSignupRepository.findAll();
+	}
+	public List<CustomerSignupDetails> getCustomerById(String customerId) {
+        return customerSignupRepository.findByCustomerId(customerId);
+    }
+	
+	public CustomerSignupDetails createCustomer(CustomerSignupDetails customer)
+	{
+		
+		LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedDateString = date.format(formattedDate);
+        // String otp = formattedDateString.substring(formattedDateString.length() - 4);
+        customer.setCustomerId(formattedDateString);
+        
+        
+		return customerSignupRepository.save(customer);
+	}
+	
+	 public List<CustomerSignupDetails> getCustomerIdByMobileNo(String mobileno) 
+	 {
+		 return customerSignupRepository.findByMobileno(mobileno);
+	 }
+	 public ResponseEntity<String> checkMobileNumber(String mobileNumber) 
+		{
+			List<CustomerSignupDetails> customers = customerSignupRepository.findByMobileno(mobileNumber);
+		    if (!customers.isEmpty()) {
+		        return ResponseEntity.ok("Mobile number exists");
+		    } else {
+		        return ResponseEntity.ok("Mobile number is not exists");
+		    }
+		}
+
+		public ResponseEntity<String> checkEmail(String email) {
+			List<CustomerSignupDetails> customers = customerSignupRepository.findByEmail(email);
+		    if (!customers.isEmpty()) {
+		        return ResponseEntity.ok("Email is exists");
+		    } else {
+		        return ResponseEntity.ok("Email is not exists");
+		    }
+		}
+		
+
+	    public String deleteById(long id) {
+	    	
+	        if (customerSignupRepository.existsById(id)) {
+	            customerSignupRepository.deleteById(id);
+	            return "Deleted";
+	        } else {
+	            return "Not Found";
+	        }
+	    }
+}

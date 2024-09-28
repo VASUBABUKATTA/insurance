@@ -1,0 +1,136 @@
+package com.insurance.service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.insurance.Exception.ResourceNotFoundException;
+import com.insurance.model.CustomerSignupDetails;
+import com.insurance.repository.CustomerSignupDetailsRepository;
+
+@Service
+public class CustomerSignupService 
+{
+	
+	@Autowired
+	CustomerSignupDetailsRepository customerSignupRepository;
+	
+	public ResponseEntity<List<CustomerSignupDetails>> getAllCustomers()
+	{
+		List<CustomerSignupDetails> data = customerSignupRepository.findAll();
+		
+		if(data.isEmpty())
+		{
+			throw new ResourceNotFoundException("Data was empty");
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.OK).body(data);
+		}
+	}
+	public List<CustomerSignupDetails> getCustomerById(String customerId) {
+        return customerSignupRepository.findByCustomerId(customerId);
+    }
+	
+	public CustomerSignupDetails createCustomer(CustomerSignupDetails customer)
+	{
+		
+		LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formattedDate = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedDateString = date.format(formattedDate);
+        // String otp = formattedDateString.substring(formattedDateString.length() - 4);
+        customer.setCustomerId(formattedDateString);
+        
+        
+		return customerSignupRepository.save(customer);
+	}
+	
+	 public List<CustomerSignupDetails> getCustomerIdByMobileNo(String mobileno) 
+	 {
+		 return customerSignupRepository.findByMobileno(mobileno);
+	 }
+	 public ResponseEntity<String> checkMobileNumber(String mobileNumber) 
+		{
+			List<CustomerSignupDetails> customers = customerSignupRepository.findByMobileno(mobileNumber);
+		    if (!customers.isEmpty()) {
+		        return ResponseEntity.ok("Mobile number exists");
+		    } else {
+		        return ResponseEntity.ok("Mobile number is not exists");
+		    }
+		}
+
+		public ResponseEntity<String> checkEmail(String email) {
+			List<CustomerSignupDetails> customers = customerSignupRepository.findByEmail(email);
+		    if (!customers.isEmpty()) {
+		        return ResponseEntity.ok("Email is exists");
+		    } else {
+		        return ResponseEntity.ok("Email is not exists");
+		    }
+		}
+		
+
+	    public String deleteById(long id) {
+	    	
+	        if (customerSignupRepository.existsById(id)) {
+	            customerSignupRepository.deleteById(id);
+	            return "Deleted";
+	        } else {
+	            return "Not Found";
+	        }
+	    }
+	    
+	    
+	    public String updateCustomerById(long id, CustomerSignupDetails customer) {
+	        Optional<CustomerSignupDetails> existingCustomerOptional = customerSignupRepository.findById(id);
+	        if (existingCustomerOptional.isPresent()) {
+	        	CustomerSignupDetails existingCustomer = existingCustomerOptional.get();
+	            
+	            existingCustomer.setName(customer.getName());
+	            existingCustomer.setMobileno(customer.getMobileno());
+	            existingCustomer.setEmail(customer.getEmail());
+//	            existingCustomer.setPassword(customer.getPassword());
+	            
+	           customerSignupRepository.save(existingCustomer);
+	           return "Updated SuccessFully";
+	        } else {
+	            return "Not Updated";
+	        }
+	    }
+	    
+	    public String updateCustomerByMobileNo(Long id, String mobileno) {
+	    	Optional<CustomerSignupDetails> existingCustomerOptional = customerSignupRepository.findById(id);
+	        if (existingCustomerOptional.isPresent()) {
+	        	CustomerSignupDetails existingCustomer = existingCustomerOptional.get();
+	           
+
+	            existingCustomer.setMobileno(mobileno);
+	            
+	           customerSignupRepository.save(existingCustomer);
+	           return "Updated SuccessFully";
+	        } else {
+	            return "Not Updated";
+	        }
+
+	      
+		   
+		}
+	    
+	    public String updateCustomerByEmailId( long id, String emailId) {
+	    	Optional<CustomerSignupDetails> existingCustomerOptional = customerSignupRepository.findById(id);
+	        if (existingCustomerOptional.isPresent()) {
+	        	CustomerSignupDetails existingCustomer = existingCustomerOptional.get();
+	         
+	            existingCustomer.setEmail(emailId);
+	    
+	           customerSignupRepository.save(existingCustomer);
+	           return "Updated SuccessFully";
+	        } else {
+	            return "Not Updated";
+	        }
+		}
+}

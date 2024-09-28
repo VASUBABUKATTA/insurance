@@ -1,0 +1,19 @@
+package com.insurance;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@SpringBootApplication
+@Tag(
+		name="CRUD REST APIs for PropertyInsurance",
+		description = " CRUD rest api in propertyinsurance to CREATE, UPDATE, FETCH AND DELETE insurance details"
+	)
+public class NewInsuranceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(NewInsuranceApplication.class, args);
+	}
+
+}

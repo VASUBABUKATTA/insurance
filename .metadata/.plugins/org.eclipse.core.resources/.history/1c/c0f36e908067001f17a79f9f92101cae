@@ -1,0 +1,66 @@
+package com.insurance.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.insurance.model.FillDetailsPage;
+import com.insurance.repository.FillDetailsRepository;
+
+@Service
+public class FillDetailsService 
+{
+	
+	@Autowired
+	FillDetailsRepository fillDetailsRepository;
+	
+	public List<FillDetailsPage> getAllData()
+	{
+		return fillDetailsRepository.findAll();
+	}
+	
+	public Optional<FillDetailsPage> getFillDetailsById(long id)
+	{
+		return fillDetailsRepository.findById(id);
+	}
+	
+	public List<FillDetailsPage> getFillDetailsByCustomerId(String customerId)
+	{
+		return fillDetailsRepository.findByCustomerId(customerId);
+	}
+	public FillDetailsPage createData(FillDetailsPage data )
+	{
+		return fillDetailsRepository.save(data);
+	}
+	
+	public String deleteFillDetailsById(long id) {
+        if (fillDetailsRepository.existsById(id)) {
+            fillDetailsRepository.deleteById(id);
+            return "Deleted";
+        } else {
+            return "Not Found";
+        }
+    }
+	
+	public String updateFillDetailsById(long id, FillDetailsPage fillDetails) {
+        Optional<FillDetailsPage> existingFillDetailsOptional = fillDetailsRepository.findById(id);
+        
+        if (existingFillDetailsOptional.isPresent()) {
+        	FillDetailsPage existingFillDetails = existingFillDetailsOptional.get();
+            
+            existingFillDetails.setPincode(fillDetails.getPincode());
+            existingFillDetails.setHouseno(fillDetails.getHouseno());
+            existingFillDetails.setStreetno(fillDetails.getStreetno());
+            existingFillDetails.setCity(fillDetails.getCity());
+            existingFillDetails.setState(fillDetails.getState());
+            
+            fillDetailsRepository.save(existingFillDetails);
+            return "updated successfully";
+        } else {
+            return "records not updated";
+        }
+    }
+
+}
